@@ -54,7 +54,8 @@ export default (skin) => {
       minProximity: 2,
       maxProximity: 10,
       defaults: {
-        proximity: 2
+        proximity: 2,
+        term: 'NEAR'
       },
       customProps: {}
     }

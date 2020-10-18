@@ -2,6 +2,13 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import range from "lodash/range";
 
+const PROXIMITY_TERMS = [
+  { title: 'NEAR', value: 'NEAR' },
+  { title: 'BEFORE', value: 'BEFORE' },
+  { title: 'EXCEPT', value: 'EXCEPT' },
+];
+const DEFAULT_PROXIMITY_TERM = 'NEAR';
+
 export default class Proximity extends PureComponent {
   static propTypes = {
     config: PropTypes.object.isRequired,
@@ -30,6 +37,10 @@ export default class Proximity extends PureComponent {
     this.props.setOption("proximity", parseInt(value));
   }
 
+  handleTermChange = (value) => {
+    this.props.setOption("term", value);
+  }
+
   render() {
     const {
       defaults, options, config, optionLabel, optionPlaceholder, customProps, 
@@ -37,22 +48,25 @@ export default class Proximity extends PureComponent {
     } = this.props;
     const {settings, widgets} = config;
     const defaultProximity = defaults ? defaults.proximity : undefined;
+    const defaultProximityTerm = defaults && defaults.term ? defaults.term : DEFAULT_PROXIMITY_TERM;
     const {showLabels} = settings;
     const selectedProximity = options.get("proximity", defaultProximity);
+    const selectedProximityTerm = options.get("term", defaultProximityTerm);
     const proxValues = range(minProximity, maxProximity + 1).map((item) => ({title: item, value: item}));
     const Select = widgets.select.factory;
 
     return (
       <div className="operator--PROXIMITY">
         <div className="operator--options">
-          { showLabels
-            && <label className="rule--label">{optionLabel}</label>
-          }
-          { !showLabels && optionTextBefore
-            && <div className="operator--options--sep">
-              <span>{optionTextBefore}</span>
-            </div>
-          }
+          <Select
+            config={config}
+            value={selectedProximityTerm}
+            listValues={PROXIMITY_TERMS}
+            setValue={this.handleTermChange}
+            readonly={readonly}
+            placeholder={optionPlaceholder}
+            {...customProps}
+          />
           <Select
             config={config}
             value={selectedProximity}
