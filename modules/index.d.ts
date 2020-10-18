@@ -306,6 +306,7 @@ interface ProximityConfig {
   maxProximity: number,
   defaults: {
       proximity: number,
+      term: string,
   },
   customProps?: AnyObject,
 }
